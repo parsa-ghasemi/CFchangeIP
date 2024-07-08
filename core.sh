@@ -31,29 +31,26 @@
 # update cloudflare domains ip ($1=ip, $2=zone-id, $3=email, $4=key, $5=andis, $6=proxied)
   function cf_records_update(){
     cf_records_info $2 $3 $4
-    for i in $5
-      do
        curl -XPUT \
             --header 'Content-Type: application/json' \
             --header 'X-Auth-Email:'$3 \
             --header 'X-Auth-Key:'$4 \
             --data '{
             "content": "'$1'",
-            "name": "'${cf_dns_domains[$i]}'",
+            "name": "'${cf_dns_domains[$5]}'",
             "proxied": '$6',
             "type": "A"
-          }' 'https://api.cloudflare.com/client/v4/zones/'$2'/dns_records/'${cf_dns_ids[$i]}
-        i=$(( $i + 1 ))
-      done      
+          }' 'https://api.cloudflare.com/client/v4/zones/'$2'/dns_records/'${cf_dns_ids[$5]}
+   
     cf_records_info $2 $3 $4
     request=`echo $request | grep -c $1`
 
     if [ $request -ge "1" ]
     then
-      message="cloudflare changed ip. - ($1)"
+      message="cloudflare changed ip. - ${cf_dns_domains[$5]} - ($1)"
       telegram_message $telegram_token $telegram_chat_id "$message" '1'
     else
-      message="cloudflare could not change ip. - ($1) - ($2)"
+      message="cloudflare could not change ip. - ${cf_dns_domains[$5]} - ($1) - ($2)"
       telegram_message $telegram_token $telegram_chat_id "$message" '0'
     fi
   }
