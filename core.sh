@@ -50,10 +50,10 @@
 
     if [ $request -ge "1" ]
     then
-      message="cloudflare changed ip. ${cf_dns_domains[$5]}"
+      message="cloudflare changed ip. ${cf_dns_domains[$5]} - ($1)"
       telegram_message $telegram_token $telegram_chat_id "$message" '1'
     else
-      message="cloudflare could not change ip. ${cf_dns_domains[$5]} - ($2)"
+      message="cloudflare could not change ip. ${cf_dns_domains[$5]} - ($1) - ($2)"
       telegram_message $telegram_token $telegram_chat_id "$message" '0'
     fi
   }
